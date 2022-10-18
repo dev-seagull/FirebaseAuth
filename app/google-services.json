@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "111401781250",
+    "firebase_url": "https://firbaseauth-app-default-rtdb.firebaseio.com",
     "project_id": "firbaseauth-app",
     "storage_bucket": "firbaseauth-app.appspot.com"
   },
