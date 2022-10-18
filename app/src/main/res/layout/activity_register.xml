@@ -29,7 +29,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
-        android:id="@+id/etFirstName"
+        android:id="@+id/FirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -46,7 +46,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
-        android:id="@+id/etLastName"
+        android:id="@+id/LastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -63,7 +63,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
-        android:id="@+id/etRegisterEmail"
+        android:id="@+id/EmailField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -80,7 +80,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
-        android:id="@+id/etRegisterPassword"
+        android:id="@+id/PasswordField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
