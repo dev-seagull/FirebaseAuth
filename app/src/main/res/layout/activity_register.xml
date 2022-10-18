@@ -94,7 +94,7 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/btnRegister"
+        android:id="@+id/RegisterButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
@@ -102,7 +102,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <TextView
-        android:id="@+id/tvSwitchToLogin"
+        android:id="@+id/LoginLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
