@@ -6,81 +6,71 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.firbaseauthapp.LoginActivity;
+import com.example.firbaseauthapp.R;
+import com.example.firbaseauthapp.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class LoginActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth UserAuth;
+    TextView FirstName, LastName, Email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
 
 
-        UserAuth = FirebaseAuth.getInstance();
-        if (UserAuth.getCurrentUser() != null) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
             finish();
             return;
         }
 
-        Button btnLogin = findViewById(R.id.LoginButton);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        FirstName = findViewById(R.id.FirstName);
+        LastName = findViewById(R.id.LastName);
+        Email = findViewById(R.id.Email);
+
+        Button LogoutButton = findViewById(R.id.LogoutButton);
+        LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                authenticateUser();
+                logoutUser();
             }
         });
 
-        TextView tvSwitchToRegister = findViewById(R.id.SwitchToRegister);
-        tvSwitchToRegister.setOnClickListener(new View.OnClickListener() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("users").child(currentUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                switchToRegister();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    FirstName.setText("First Name: " + user.firstName);
+                    LastName.setText("Last Name: " + user.lastName);
+                    Email.setText("Email: " + user.email);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }
 
-    private void authenticateUser() {
-        EditText etLoginEmail = findViewById(R.id.LoginEmail);
-        EditText etLoginPassword = findViewById(R.id.LoginPassword);
-
-        String email = etLoginEmail.getText().toString();
-        String password = etLoginPassword.getText().toString();
-
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        UserAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            showMainActivity();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void showMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void switchToRegister() {
-        Intent intent = new Intent(this, RegisterActivity.class);
+    private void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

@@ -30,8 +30,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        Button btnLogin = findViewById(R.id.LoginButton);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        Button LoginButton = findViewById(R.id.LoginButton);
+        LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 authenticateUser();
