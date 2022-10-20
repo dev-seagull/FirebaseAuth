@@ -2,99 +2,73 @@ package com.example.firbaseauthapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private FirebaseAuth UserAuth;
+    TextInputEditText etRegEmail;
+    TextInputEditText etRegPassword;
+    TextView tvLoginHere;
+    Button btnRegister;
+
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_resigter);
 
-        UserAuth = FirebaseAuth.getInstance();
-        if(UserAuth.getCurrentUser() != null) {
-            finish();
-            return;
-        }
+        etRegEmail = findViewById(R.id.etRegEmail);
+        etRegPassword = findViewById(R.id.etRegPass);
+        tvLoginHere = findViewById(R.id.tvLoginHere);
+        btnRegister = findViewById(R.id.btnRegister);
 
-        Button RegisterButton = findViewById(R.id.RegisterButton);
-        RegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RegisterUser();
-            }
+        mAuth = FirebaseAuth.getInstance();
+
+        btnRegister.setOnClickListener(view ->{
+            createUser();
         });
 
-        TextView textViewSwitchToLogin = findViewById(R.id.LoginLink);
-        textViewSwitchToLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                SwitchToLogin();
-            }
+        tvLoginHere.setOnClickListener(view ->{
+            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         });
     }
 
-    private void RegisterUser() {
-        EditText etFirstName = findViewById(R.id.FirstName);
-        EditText etLastName = findViewById(R.id.LastName);
-        EditText etRegisterEmail = findViewById(R.id.EmailField);
-        EditText etRegisterPassword = findViewById(R.id.PasswordField);
+    private void createUser(){
+        String email = etRegEmail.getText().toString();
+        String password = etRegPassword.getText().toString();
 
-        String firstName = etFirstName.getText().toString();
-        String lastName = etLastName.getText().toString();
-        String email = etRegisterEmail.getText().toString();
-        String password = etRegisterPassword.getText().toString();
-
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all blank fields", Toast.LENGTH_LONG).show();
-            return;
-        }
-        UserAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            User user = new User(firstName, lastName, email);
-                            FirebaseDatabase.getInstance().getReference("users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            showMainActivity();
-                                        }
-                                    });
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_LONG).show();
-                        }
+        if (TextUtils.isEmpty(email)){
+            etRegEmail.setError("Email cannot be empty");
+            etRegEmail.requestFocus();
+        }else if (TextUtils.isEmpty(password)){
+            etRegPassword.setError("Password cannot be empty");
+            etRegPassword.requestFocus();
+        }else{
+            mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+                        Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    }else{
+                        Toast.makeText(RegisterActivity.this, "Registration Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                });
+                }
+            });
+        }
     }
 
-    private void showMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void SwitchToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }

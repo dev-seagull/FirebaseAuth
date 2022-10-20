@@ -14,7 +14,7 @@
         android:theme="@style/Theme.FirbaseAuthApp"
         tools:targetApi="31">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ResigterAcivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
