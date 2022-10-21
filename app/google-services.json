@@ -8,7 +8,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:111401781250:android:95f8393285eeff1b0c3f1b",
+        "mobilesdk_app_id": "1:111401781250:android:55312f6309d155460c3f1b",
         "android_client_info": {
           "package_name": "com.example.firbaseauthapp"
         }

@@ -70,16 +70,11 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Not registered yet"
-                android:textSize="16sp"/>
-
-            <TextView
                 android:id="@+id/tvRegisterHere"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
+                android:gravity="center"
                 android:text="Register here"
                 android:textColor="@color/teal_700"
                 android:textStyle="bold"
